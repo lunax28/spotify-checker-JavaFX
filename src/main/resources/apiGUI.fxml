@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="521.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <MenuBar maxWidth="-Infinity" minWidth="-Infinity" prefHeight="29.0" prefWidth="765.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TextArea layoutX="27.0" layoutY="139.0" prefHeight="355.0" prefWidth="171.0" />
+      <TextArea fx:id="artistsTextArea" layoutX="372.0" layoutY="136.0" prefHeight="362.0" prefWidth="243.0" />
+      <Button layoutX="27.0" layoutY="62.0" mnemonicParsing="false" text="Source" />
+      <Button layoutX="362.0" layoutY="62.0" mnemonicParsing="false" text="Source" />
+      <Label layoutX="96.0" layoutY="107.0" text="UPC" />
+      <Label layoutX="473.0" layoutY="107.0" text="Artists" />
+      <Button layoutX="641.0" layoutY="157.0" mnemonicParsing="false" onAction="#checkArtists" text="Check" />
+   </children>
+</AnchorPane>
