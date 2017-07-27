@@ -16,7 +16,7 @@ public class ApiQueryUtils  {
 
     private String link;
     private JsonObject jsonObject;
-    private String response;
+    private String responseTrimmed;
     private JSONArray jArray;
     private String albumsJson;
     private String tokenString;
@@ -24,7 +24,7 @@ public class ApiQueryUtils  {
 
     public ApiQueryUtils() {
         this.link = "";
-        this.response = "";
+        this.responseTrimmed = "";
         this.jsonObject = null;
         this.tokenString = "";
         this.responseCode = 0;
@@ -55,11 +55,11 @@ public class ApiQueryUtils  {
             }
 
         } catch (MalformedURLException ex) {
-            //Logger.getLogger(ApiClass.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("MalformedURLException!!");
         } catch (ProtocolException ex) {
-            //Logger.getLogger(ApiClass.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("ProtocolException!!");
         } catch (IOException ex) {
-            //Logger.getLogger(ApiClass.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("IOException!!");
         }
 
         JsonObject token = new JsonParser().parse(json_response).getAsJsonObject();
@@ -72,6 +72,7 @@ public class ApiQueryUtils  {
     }
 
     public JsonObject getJson(String link) {
+        String response = "";
         try {
 
             URL url = new URL(link);
@@ -106,21 +107,25 @@ public class ApiQueryUtils  {
             }
             in.close();
         } catch (MalformedURLException ex) {
-            //Logger.getLogger(ApiClass.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("MalformedURLException!!");
         } catch (ProtocolException ex) {
-            //Logger.getLogger(ApiClass.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("ProtocolException!!");
         } catch (IOException ex) {
-            //Logger.getLogger(ApiClass.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("IOException!!");
         }
 
-        this.jsonObject = new JsonParser().parse(response).getAsJsonObject();
+        this.responseTrimmed = response.trim();
+
+        this.jsonObject = new JsonParser().parse(responseTrimmed).getAsJsonObject();
+        System.out.println("jsonobj: " + this.jsonObject.toString());
+
         return this.jsonObject;
 
     }
 
     public String getAlbumId() {
 
-        JsonObject jsonId = new JsonParser().parse(response).getAsJsonObject();
+        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
         this.albumsJson = jsonId.get("albums").toString();
         System.out.println("this.albumsJson: " + this.albumsJson);
 
@@ -176,7 +181,7 @@ public class ApiQueryUtils  {
 
     public String getLabelApiId() {
 
-        JsonObject jsonId = new JsonParser().parse(response).getAsJsonObject();
+        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
         this.albumsJson = jsonId.get("label").toString();
 
         System.out.println("LABEL: " + this.albumsJson);
@@ -186,7 +191,7 @@ public class ApiQueryUtils  {
 
     public String getReleaseDateApiId() {
 
-        JsonObject jsonId = new JsonParser().parse(response).getAsJsonObject();
+        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
         this.albumsJson = jsonId.get("release_date").toString();
 
         System.out.println("RELEASE DATE: " + this.albumsJson);
@@ -197,7 +202,7 @@ public class ApiQueryUtils  {
 
     public String getArtistsName() {
 
-        JsonObject jsonId = new JsonParser().parse(response).getAsJsonObject();
+        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
         this.albumsJson = jsonId.get("artists").toString();
         System.out.println("this.albumsJson: " + this.albumsJson);
 
@@ -214,7 +219,7 @@ public class ApiQueryUtils  {
 
     public String getPopularity() {
 
-        JsonObject jsonId = new JsonParser().parse(response).getAsJsonObject();
+        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
         this.albumsJson = jsonId.get("popularity").toString();
 
         System.out.println("popularity: " + this.albumsJson);
@@ -231,13 +236,13 @@ public class ApiQueryUtils  {
 
         }
 
-        JsonObject jsonId = new JsonParser().parse(response).getAsJsonObject();
+        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
         this.albumsJson = jsonId.get("albums").toString();
         jsonId = new JsonParser().parse(this.albumsJson).getAsJsonObject();
 
         String total = jsonId.get("total").toString();
         System.out.println("TOTAL: " + total);
-        response = "";
+        this.responseTrimmed = "";
         if(total.equals("1")){
             return "1";
 

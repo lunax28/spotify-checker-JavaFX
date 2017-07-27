@@ -17,7 +17,7 @@ public class Main extends Application {
         window = primaryStage;
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("apiGUI.fxml"));
         window.setTitle("Spotify Checker");
-        window.setScene(new Scene(root, 743, 673));
+        window.setScene(new Scene(root, 743, 573));
         window.setResizable(false);
         window.show();
     }

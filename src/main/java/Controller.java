@@ -1,7 +1,11 @@
 import com.google.gson.JsonObject;
 import com.sun.xml.internal.bind.v2.TODO;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -34,6 +38,9 @@ public class Controller {
     @FXML
     private File sourceFolderPath;
 
+    @FXML
+    private Label sourceLabel;
+
 
 
     public Controller(){
@@ -46,7 +53,20 @@ public class Controller {
 
         this.apiQuery  = new ApiQueryUtils();
 
-        this.sourceFolderPath = new File("/Users/equilibrium/Desktop/test");
+        //this.sourceFolderPath = new File("/Users/equilibrium/Desktop/test");
+
+    }
+
+    @FXML
+    public void locateFile(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        this.sourceFolderPath = fileChooser.showOpenDialog(new Stage());
+
+        if(this.sourceFolderPath != null){
+            this.sourceLabel.setText(this.sourceFolderPath.getAbsolutePath().toString());
+        }
+
 
     }
 
@@ -61,17 +81,20 @@ public class Controller {
         BufferedWriter bw = null;
         FileWriter fw = null;
 
-        this.logFile = new File(this.sourceFolderPath+"/UpcChecker.txt");
-        System.out.println("LOGFILE: " + this.logFile);
+        //this.logFile = new File(this.sourceFolderPath);
+        //System.out.println("LOGFILE: " + this.logFile);
 
         try {
             scanner = new Scanner(artistsTextArea.getText());
 
-            fw = new FileWriter(this.logFile);
+            fw = new FileWriter(this.sourceFolderPath);
             bw = new BufferedWriter(fw);
 
             while (scanner.hasNextLine()) {
                 tmp = scanner.nextLine();
+
+                System.out.println("TMP: " + tmp);
+
                 link = ("https://api.spotify.com/v1/artists/" + tmp);
 
                 System.out.println("LINK: " + link);
