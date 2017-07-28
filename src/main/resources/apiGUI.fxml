@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="521.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <children>
@@ -24,18 +25,25 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#aboutAlertBox" text="About" />
             </items>
           </Menu>
         </menus>
       </MenuBar>
-      <TextArea layoutX="27.0" layoutY="139.0" prefHeight="355.0" prefWidth="171.0" />
+      <TextArea fx:id="upcTextArea" layoutX="27.0" layoutY="139.0" prefHeight="355.0" prefWidth="171.0" />
       <TextArea fx:id="artistsTextArea" layoutX="372.0" layoutY="136.0" prefHeight="362.0" prefWidth="243.0" />
-      <Button layoutX="27.0" layoutY="62.0" mnemonicParsing="false" text="Source" />
+      <Button fx:id="upcSource" layoutX="27.0" layoutY="49.0" mnemonicParsing="false" onAction="#upcLocateFile" text="Source" />
       <Button layoutX="372.0" layoutY="49.0" mnemonicParsing="false" onAction="#locateFile" text="Source" />
-      <Label layoutX="96.0" layoutY="107.0" text="UPC" />
-      <Label layoutX="473.0" layoutY="107.0" text="Artists" />
-      <Button layoutX="641.0" layoutY="157.0" mnemonicParsing="false" onAction="#checkArtists" text="Check" />
+      <Label layoutX="89.0" layoutY="107.0" text="UPC" />
+      <Label layoutX="464.0" layoutY="107.0" text="Artists' ID" />
+      <Button defaultButton="true" layoutX="641.0" layoutY="157.0" mnemonicParsing="false" onAction="#checkArtists" text="Check" />
       <Label fx:id="sourceLabel" layoutX="372.0" layoutY="81.0" prefHeight="17.0" prefWidth="309.0" />
+      <Button cancelButton="true" layoutX="652.0" layoutY="467.0" mnemonicParsing="false" onAction="#clearAction" text="Clear">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font></Button>
+      <Button cancelButton="true" layoutX="225.0" layoutY="467.0" mnemonicParsing="false" onAction="#clearUpc" text="Clear" />
+      <Button defaultButton="true" layoutX="221.0" layoutY="157.0" mnemonicParsing="false" onAction="#upcCheck" text="Check" />
+      <Label fx:id="upcLabel" layoutX="27.0" layoutY="81.0" prefHeight="17.0" prefWidth="282.0" />
    </children>
 </AnchorPane>

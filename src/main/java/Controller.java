@@ -2,6 +2,7 @@ import com.google.gson.JsonObject;
 import com.sun.xml.internal.bind.v2.TODO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
@@ -39,7 +40,16 @@ public class Controller {
     private File sourceFolderPath;
 
     @FXML
+    private File upcSourceFolderPath;
+
+    @FXML
     private Label sourceLabel;
+
+    @FXML
+    private Label upcLabel;
+
+    @FXML
+    private TextArea upcTextArea;
 
 
 
@@ -70,8 +80,75 @@ public class Controller {
 
     }
 
+    @FXML
+    public void upcLocateFile(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        this.upcSourceFolderPath = fileChooser.showOpenDialog(new Stage());
+
+        if(this.upcSourceFolderPath != null){
+            this.upcLabel.setText(this.upcSourceFolderPath.getAbsolutePath().toString());
+        }
+
+
+    }
+
+
+    @FXML
+    public void clearAction(){
+
+        this.artistsTextArea.clear();
+
+
+    }
+
+    @FXML
+    public void clearUpc(){
+        this.upcTextArea.clear();
+    }
+
+    @FXML
+    public void aboutAlertBox(){
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Spotify Checker v1.0");
+        alert.setHeaderText("Alberto Vecchi");
+        alert.setContentText("Copy and paste the list of artists' ID you want to research.\nOne per line.\nThe results will be logged in your .txt file.");
+        alert.showAndWait();
+
+    }
+
 
     public void checkArtists(){
+
+        if(this.artistsTextArea.getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("You have not inserted any artist's ID!");
+            alert.showAndWait();
+
+            return;
+        } else if (this.sourceLabel.getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("You have not selected the destination file!");
+            alert.showAndWait();
+            return;
+        }
+
+        String[] arrayID = this.artistsTextArea.getText().split("\n");
+
+        for(int i= 0; i < arrayID.length;i++){
+
+            if(arrayID[i].length() != 22){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setContentText("You have entered an INVALID ID:\n\n" + arrayID[i]);
+                alert.showAndWait();
+                return;
+
+            }
+        }
 
         String link = "";
 
@@ -80,9 +157,6 @@ public class Controller {
 
         BufferedWriter bw = null;
         FileWriter fw = null;
-
-        //this.logFile = new File(this.sourceFolderPath);
-        //System.out.println("LOGFILE: " + this.logFile);
 
         try {
             scanner = new Scanner(artistsTextArea.getText());
@@ -143,7 +217,121 @@ public class Controller {
             }
         }
 
-        //JOptionPane.showMessageDialog(this, "DONE!");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Results:");
+        alert.setHeaderText("DONE!");
+        alert.showAndWait();
+
+    }
+
+
+
+    public void upcCheck(){
+
+        if(this.upcTextArea.getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("You have not inserted any artist's ID!");
+            alert.showAndWait();
+
+            return;
+        } else if (this.upcLabel.getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("You have not selected the destination file!");
+            alert.showAndWait();
+            return;
+        }
+
+        /**
+         * TODO
+         * Check for UPC validity!
+
+        String[] arrayID = this.artistsTextArea.getText().split("\n");
+
+        for(int i= 0; i < arrayID.length;i++){
+
+            if(arrayID[i].length() != 22){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setContentText("You have entered an INVALID ID:\n\n" + arrayID[i]);
+                alert.showAndWait();
+                return;
+
+            }
+        }
+        */
+
+
+        String link = "";
+
+        Scanner scanner = null;
+        String tmp = "";
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            scanner = new Scanner(upcTextArea.getText());
+
+            fw = new FileWriter(this.upcSourceFolderPath);
+            bw = new BufferedWriter(fw);
+
+            while (scanner.hasNextLine()) {
+                tmp = scanner.nextLine();
+
+                System.out.println("TMP: " + tmp);
+
+                link = ("https://api.spotify.com/v1/search?q=upc:" + tmp + "&type=album");
+
+                System.out.println("LINK: " + link);
+
+                JsonObject jsonResponse = apiQuery.getJson(link);
+
+                System.out.println("JSON RESPONSE: " + jsonResponse.toString());
+
+                JsonObject jsonAlbum = jsonResponse.get("albums").getAsJsonObject();
+
+
+                int total = jsonAlbum.get("total").getAsInt();
+
+
+                bw.write(tmp + ", " + total + "\n");
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+
+            if (scanner != null) {
+                scanner.close();
+            }
+
+            try {
+
+                if (bw != null) {
+                    bw.close();
+                }
+
+                if (fw != null) {
+                    fw.close();
+                }
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+
+            }
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Results:");
+        alert.setHeaderText("DONE!");
+        alert.showAndWait();
+
+
+
 
     }
 

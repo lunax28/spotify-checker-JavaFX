@@ -1,5 +1,6 @@
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.scene.control.Alert;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -89,8 +90,14 @@ public class ApiQueryUtils  {
             httpCon.setRequestProperty("Authorization", basicAuth);
 
             this.responseCode = httpCon.getResponseCode();
-            if (this.responseCode == 429 || this.responseCode == 0 || this.responseCode == 502) {
-                System.out.println("###\nRESPONSE CODE 429 or 0!!!!\n###");
+            if (this.responseCode != 200) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                //alert.setHeaderText("Alberto Vecchi");
+                alert.setContentText("An error has occured. Rate limit probably reached");
+
+                alert.showAndWait();
+
                 return null;
 
             }
@@ -123,108 +130,8 @@ public class ApiQueryUtils  {
 
     }
 
-    public String getAlbumId() {
 
-        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
-        this.albumsJson = jsonId.get("albums").toString();
-        System.out.println("this.albumsJson: " + this.albumsJson);
 
-        jsonId = new JsonParser().parse(this.albumsJson).getAsJsonObject();
-
-        String items = jsonId.get("items").toString();
-
-        System.out.println("ITEMS: " + items);
-
-        JSONObject jsonObj = new JSONObject(this.albumsJson);
-        this.jArray = jsonObj.getJSONArray("items");
-
-        System.out.println("ARRAY: " + jArray.toString());
-
-        JSONObject job = jArray.getJSONObject(0);
-        System.out.println("JOB: " + job.toString());
-        String albumId = job.getString("id");
-        System.out.println("ID: " + albumId);
-
-        return albumId;
-    }
-
-    public String getAlbumName() {
-        JSONObject job = jArray.getJSONObject(0);
-        System.out.println("JOB: " + job.toString());
-        String albumName = job.getString("name");
-        System.out.println("NAME: " + albumName);
-
-        return albumName;
-    }
-
-    public String showCoverLink() {
-        System.out.println("#1#1#1#1#");
-        System.out.println("#1#1#1#1#");
-        System.out.println("#1#1#1#1#\n");
-
-        JSONObject jsonObj = new JSONObject(this.albumsJson);
-        this.jArray = jsonObj.getJSONArray("items");
-
-        JSONObject job = this.jArray.getJSONObject(0);
-        System.out.println("JOB: " + job.toString());
-
-        System.out.println("IMAGES: " + job.getJSONArray("images").toString());
-
-        JSONArray jArrayImage = job.getJSONArray("images");
-        JSONObject jobImage = jArrayImage.getJSONObject(0);
-        System.out.println("JOB: " + jobImage.toString());
-        String coverURL = jobImage.getString("url");
-        System.out.println("URL: " + coverURL);
-
-        return coverURL;
-    }
-
-    public String getLabelApiId() {
-
-        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
-        this.albumsJson = jsonId.get("label").toString();
-
-        System.out.println("LABEL: " + this.albumsJson);
-
-        return this.albumsJson;
-    }
-
-    public String getReleaseDateApiId() {
-
-        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
-        this.albumsJson = jsonId.get("release_date").toString();
-
-        System.out.println("RELEASE DATE: " + this.albumsJson);
-
-        return this.albumsJson;
-
-    }
-
-    public String getArtistsName() {
-
-        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
-        this.albumsJson = jsonId.get("artists").toString();
-        System.out.println("this.albumsJson: " + this.albumsJson);
-
-        this.jArray = new JSONArray(this.albumsJson);
-        System.out.println("JSONArray: " + this.jArray.toString());
-
-        JSONObject arrayArtists = jArray.getJSONObject(0);
-        System.out.println("arrayArtists: " + arrayArtists.toString());
-        String albumArtists = arrayArtists.getString("name");
-        System.out.println("ARTISTS NAME: " + albumArtists);
-
-        return albumArtists;
-    }
-
-    public String getPopularity() {
-
-        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
-        this.albumsJson = jsonId.get("popularity").toString();
-
-        System.out.println("popularity: " + this.albumsJson);
-        return this.albumsJson;
-    }
 
     public String isAlbum(String link) {
         this.link = link;
@@ -253,33 +160,6 @@ public class ApiQueryUtils  {
 
     public int getResponseCode() {
         return responseCode;
-    }
-
-
-
-
-    public String getArtistInfo(String artistLink) {
-
-        this.link = artistLink;
-
-        JsonObject jsonIsAlbum = getJson(this.link);
-
-        if (jsonIsAlbum == null) {
-            return "RATE LIMIT";
-
-        }
-
-        //System.out.println("JSON: " + jsonIsAlbum.toString());
-
-        return jsonIsAlbum.toString();
-
-    }
-
-    private class MyOwnException extends Exception {
-
-        public MyOwnException(String msg) {
-            super(msg);
-        }
     }
 
 }
