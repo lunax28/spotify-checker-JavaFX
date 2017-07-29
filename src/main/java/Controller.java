@@ -152,8 +152,6 @@ public class Controller{
 
         }
 
-
-
         if(this.artistsTextArea.getText().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning!");
@@ -221,7 +219,7 @@ public class Controller{
 
                 String name = jsonResponse.get("name").getAsString();
 
-                bw.write(tmp + "," + name + "," + popularity + "," + followers + "\n");
+                bw.write(tmp + "," + name + "," + popularity + "," + followers +  System.lineSeparator());
 
             }
 
@@ -329,7 +327,7 @@ public class Controller{
                 int total = jsonAlbum.get("total").getAsInt();
 
 
-                bw.write(tmp + ", " + total + "\n");
+                bw.write(tmp + ", " + total + System.lineSeparator());
 
             }
 
