@@ -1,11 +1,9 @@
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.sun.org.apache.xml.internal.security.Init;
-import com.sun.xml.internal.bind.v2.TODO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -143,11 +141,7 @@ public class Controller{
     public void checkArtists(){
 
         if(this.choiceBox.getValue().equals(obsList.get(0))){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning!");
-            alert.setContentText("Coming soon!");
-            alert.showAndWait();
-
+            this.checkArtistsByName();
             return;
 
         }
@@ -255,6 +249,123 @@ public class Controller{
 
     }
 
+    public void checkArtistsByName() {
+
+        if(this.artistsTextArea.getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("You have not inserted any artist's ID!");
+            alert.showAndWait();
+
+            return;
+        } else if (this.sourceLabel.getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("You have not selected the destination file!");
+            alert.showAndWait();
+            return;
+        }
+
+
+        String link = "";
+
+        Scanner scanner = null;
+        String tmp = "";
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            scanner = new Scanner(artistsTextArea.getText());
+
+            fw = new FileWriter(this.sourceFolderPath);
+            bw = new BufferedWriter(fw);
+
+            while (scanner.hasNextLine()) {
+                tmp = scanner.nextLine();
+
+                System.out.println("TMP: " + tmp);
+
+                String artistName = String.format("%s", tmp).replaceAll("\\s","%20");
+
+                link = ("https://api.spotify.com/v1/search?q=" + artistName + "&type=artist");
+
+                System.out.println("LINK: " + link);
+
+                JsonObject jsonResponse = apiQuery.getJson(link);
+
+                System.out.println("JSON RESPONSE: " + jsonResponse.toString());
+
+
+                JsonObject artistsObj = jsonResponse.get("artists").getAsJsonObject();
+
+                JsonArray artistsArray = artistsObj.get("items").getAsJsonArray();
+
+
+
+                for (int i = 0; i < artistsArray.size(); i++) {
+
+                    JsonObject jsonObjArr = artistsArray.get(i).getAsJsonObject();
+
+                    String lowerCaseArtist = jsonObjArr.get("name").getAsString().toLowerCase();
+
+                    if(tmp.toLowerCase().equals(lowerCaseArtist)){
+
+                        int popularity = jsonObjArr.get("popularity").getAsInt();
+
+                        JsonObject followersObject = jsonObjArr.get("followers").getAsJsonObject();
+
+                        int followers = followersObject.get("total").getAsInt();
+
+                        bw.write(lowerCaseArtist + ", " + popularity + ", " + followers + System.lineSeparator());
+
+                    } else {
+
+                        bw.write(lowerCaseArtist + ", NOT FOUND" + System.lineSeparator());
+                    }
+
+
+                }
+
+
+
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+
+            if (scanner != null) {
+                scanner.close();
+            }
+
+            try {
+
+                if (bw != null) {
+                    bw.close();
+                }
+
+                if (fw != null) {
+                    fw.close();
+                }
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+
+            }
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Results:");
+        alert.setHeaderText("DONE!");
+        alert.showAndWait();
+
+
+
+
+    }
 
 
     public void upcCheck(){
