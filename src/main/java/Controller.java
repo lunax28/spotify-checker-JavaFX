@@ -1,8 +1,13 @@
 import com.google.gson.JsonObject;
+import com.sun.org.apache.xml.internal.security.Init;
 import com.sun.xml.internal.bind.v2.TODO;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
@@ -12,11 +17,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class Controller {
+public class Controller{
+
+    ObservableList<String> obsList = FXCollections.observableArrayList("Name","ID");
 
     @FXML
     private ApiQueryUtils apiQuery;
@@ -51,9 +60,14 @@ public class Controller {
     @FXML
     private TextArea upcTextArea;
 
+    @FXML
+    private ChoiceBox<String> choiceBox;
+
 
 
     public Controller(){
+
+
 
         this.token = "";
 
@@ -78,6 +92,13 @@ public class Controller {
         }
 
 
+    }
+
+    @FXML
+    private void initialize(){
+
+        this.choiceBox.setValue("ID");
+        this.choiceBox.setItems(this.obsList);
     }
 
     @FXML
@@ -120,6 +141,18 @@ public class Controller {
 
 
     public void checkArtists(){
+
+        if(this.choiceBox.getValue().equals(obsList.get(0))){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("Coming soon!");
+            alert.showAndWait();
+
+            return;
+
+        }
+
+
 
         if(this.artistsTextArea.getText().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -334,5 +367,6 @@ public class Controller {
 
 
     }
+
 
 }
